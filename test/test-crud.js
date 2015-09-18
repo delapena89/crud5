@@ -11,6 +11,7 @@ chai.use(chaiHttp);
 describe("Items", function() {
 
   Item.collection.drop();
+  var id;
 
 
   beforeEach(function(done) {
@@ -18,6 +19,7 @@ describe("Items", function() {
       name: "mop",
       location: "closet"
     });
+    id = newItem._id;
     newItem.save(function(err) {
       done();
     });
@@ -44,23 +46,75 @@ describe("Items", function() {
       });
     });
 
+  it('should list a SINGLE item on /item/<id> GET',
+    function(done) {
+      chai.request(server)
+      .get('/items/' + id)
+      .end(function(err, res) {
+        res.should.have.status(200);
+        res.should.be.json;
+        console.log(res.body);
+        console.log(id);
+        res.body.should.be.a('array');
+        res.body[0].should.be.a('object');
+        res.body[0].name.should.be.a('string');
+        res.body[0].name.should.be.equal('mop');
+        res.body[0].location.should.be.a('string');
+        res.body[0].location.should.be.equal('closet');
+        done();
+      });
+      });
+
+
+  it('should add a SINGLE item on /items POST',
+    function(done) {
+      chai.request(server)
+      .post('/items/chair/livingroom')
+      .end(function(err,res) {
+        res.should.have.status(200);
+        res.should.be.json;
+        // res.body.should.be.a('array');
+        res.body.should.be.a('object');
+        res.body.name.should.be.a('string');
+        res.body.name.should.be.equal('chair');
+        res.body.location.should.be.a('string');
+        res.body.location.should.be.equal('livingroom');
+        done();
+      });
+    });
+
+  it('should update a SINGLE item on /item/<id> PUT',
+    function(done) {
+      chai.request(server)
+      .put('/items/' + id + '/broom/closet')
+      .end(function(err, res) {
+        res.should.have.status(200);
+        res.should.be.json;
+        console.log(res.body);
+        res.body.should.be.a('object');
+        res.body.name.should.be.a('string');
+        res.body.name.should.be.equal('broom');
+        res.body.location.should.be.a('string');
+        res.body.location.should.be.equal('closet');
+        done();
+      });
+      });
+
+
+  it('should delete a SINGLE item on /item/<id> DELETE',
+function(done) {
+      chai.request(server)
+      .delete('/items/' + id)
+      .end(function(err, res) {
+        console.log(res.body);
+        res.should.have.status(200);
+        res.should.be.json;
+        console.log(res.body);
+        res.body.should.be.a('object');
+        done();
+      });
+    });
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-  it('should list a SINGLE blob on /blob/<id> GET');
-  it('should add a SINGLE blob on /blobs POST');
-  it('should update a SINGLE blob on /blob/<id> PUT');
-  it('should delete a SINGLE blob on /blob/<id> DELETE');
-
-});
+}); //close describe

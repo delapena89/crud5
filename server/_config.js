@@ -1,8 +1,8 @@
 var config = {};
 
-config.MONGO_URI = {
-  test: 'mongobd://localhost/crud-test',
-  development: 'mongobd://localhost/crud-testing',
+config.mongoURI = {
+  test: 'mongodb://localhost/crud-test',
+  development: 'mongodb://localhost/crud-testing',
 };
 
 module.exports = config;
